@@ -1,0 +1,71 @@
+logs: # 日志配置
+  level: # 日志级别
+    root: warn # 默认级别
+    loggers: # 分包的日志级别
+      "main": debug # main 包的日志级别
+      "github.com/youthlin": debug # 指定包(可以是包的前缀)
+  zap: # zap 配置
+    - name: console # 控制台输出所有日志
+      enable: true # 是否启用
+      level: debug # 日志级别
+      output:
+        type: console # 输出类型
+        file:
+          filename: stdout # or stderr
+      encoder:
+        json: false # 不需要格式化为 json
+        levelEncoder: capitalColor # 带颜色大写的日志级别 capital/capitalColor/color/lowcase
+        timeEncoder: rfc3339nano # e.g.: 2006-01-02T15:04:05.999999999Z07:00 rfc3339nano/rfc3339/iso8601/millis/nanos/epoch
+        durationEncoder: string # 时间段格式化为带单位的: 968.6µs string/nanos/ms/seconds or 带 layout 子字段
+        callerEncoder: full # full/short
+    - name: file # 输出到文件
+      enable: true
+      level: debug
+      output:
+        type: file
+        file: # 以下字段是默认值，不需要改的可以不写
+          filename: logs/app.log # default is 'app.log'
+          maxsize: 100 # MB
+          maxage: 30 # day
+          maxbackups: 30
+          localtime: false # UTC or local time
+          compress: true # gzip
+      encoder:
+        json: true
+        timeKey: time
+        levelEncoder: capital
+        timeEncoder:
+          layout: "2006-01-03 15:04:06.000"
+        durationEncoder: nanos
+    - name: error-file # 只收集 error 日志
+      enable: true
+      level: error
+      output:
+        type: file
+        file:
+          filename: logs/app.error.log
+      encoder:
+        json: true
+        timeKey: time
+        levelEncoder: capital
+        timeEncoder: rfc3339nano
+        durationEncoder: nanos
+web: # web 服务器配置
+  addr: ":8081" # 监听地址
+  debug: true # gin 是否设置为 debug 模式
+  access_log: # 访问日志
+    - type: console
+      destination:
+        filename: stdout
+    - type: file
+      destination:
+        filename: logs/web.access.log
+        compress: true
+  error_log: # recover 日志
+    - type: console
+      destination:
+        filename: stderr
+    - type: file
+      destination:
+        filename: logs/web.recover.log
+        compress: true
