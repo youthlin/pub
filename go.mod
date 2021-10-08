@@ -5,12 +5,17 @@ go 1.17
 require (
 	github.com/cockroachdb/errors v1.8.6
 	github.com/gin-gonic/gin v1.7.4
+	github.com/google/uuid v1.3.0
 	github.com/youthlin/logs v0.0.5
+	github.com/youthlin/t v0.0.5
 	github.com/youthlin/z v0.0.6
+	golang.org/x/text v0.3.7
 	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
+	github.com/Xuanwo/go-locale v1.0.0 // indirect
+	github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210803070921-b358b509191a // indirect
 	github.com/cockroachdb/logtags v0.0.0-20190617123548-eb05cc24525f // indirect
 	github.com/cockroachdb/redact v1.1.1 // indirect
 	github.com/cockroachdb/sentry-go v0.6.1-cockroachdb.2 // indirect

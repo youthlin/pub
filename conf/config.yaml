@@ -55,17 +55,18 @@ web: # web 服务器配置
   debug: true # gin 是否设置为 debug 模式
   access_log: # 访问日志
     - type: console
-      destination:
+      file:
         filename: stdout
     - type: file
-      destination:
+      file:
         filename: logs/web.access.log
         compress: true
   error_log: # recover 日志
     - type: console
-      destination:
+      file:
         filename: stderr
     - type: file
-      destination:
+      file:
         filename: logs/web.recover.log
         compress: true
+lang_path: conf/langs

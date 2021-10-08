@@ -6,17 +6,31 @@ import (
 
 	"github.com/cockroachdb/errors"
 	"github.com/youthlin/z"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"gopkg.in/yaml.v2"
 )
 
-var c AppConfig
+var c = AppConfig{
+	Logs: *z.DefaultConfig(),
+	Web: WebConfig{
+		Addr:  ":8080",
+		Debug: true,
+		AccessLog: []*z.Output{
+			{Type: z.Console, File: lumberjack.Logger{Filename: z.Stdout}},
+		},
+		ErrorLog: []*z.Output{
+			{Type: z.Console, File: lumberjack.Logger{Filename: z.Stderr}},
+		},
+	},
+	LangPath: "conf/langs",
+}
 
 func initConfig() {
 	// viper can not unmarshal yaml, so use yaml directly
-	// * cannot parse 'Logs.Level.Root' as int: strconv.ParseInt: parsing "warn": invalid syntax
+	// > * cannot parse 'Logs.Level.Root' as int: strconv.ParseInt: parsing "warn": invalid syntax
 
 	name := "conf/config.yaml"
-	if n := os.Getenv("ENV"); n != "" {
+	if n := os.Getenv("CONFIG_FILE"); n != "" {
 		name = n
 	}
 	file, err := os.Open(name)
@@ -37,8 +51,9 @@ func Config() *AppConfig {
 }
 
 type AppConfig struct {
-	Logs z.LogsConfig `json:"logs,omitempty" yaml:"logs"`
-	Web  WebConfig    `json:"web,omitempty" yaml:"web"`
+	Logs     z.LogsConfig `json:"logs,omitempty" yaml:"logs"`
+	Web      WebConfig    `json:"web,omitempty" yaml:"web"`
+	LangPath string       `json:"lang_path" yaml:"lang_path"`
 }
 
 // WebConfig gin 配置
